@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3>WebSocket test</h3>
+
+<input type="text" id="msgInput" placeholder="Type a message" />
+<button onclick="sendMessage()">Send</button>
+
+<pre id="messages"></pre>
+
+<script>
+    // Make sure the port matches your FastAPI server
+    const ws = new WebSocket("ws://localhost:8000/ws/bookings");
+
+    ws.onopen = function() {
+        console.log("Connected to WebSocket server");
+        document.getElementById('messages').textContent += "Connected\n";
+    };
+
+    ws.onmessage = function(event) {
+        document.getElementById('messages').textContent += event.data + "\n";
+    };
+
+    ws.onclose = function(event) {
+        document.getElementById('messages').textContent += "Disconnected\n";
+    };
+
+    ws.onerror = function(error) {
+        document.getElementById('messages').textContent += "Error: " + error + "\n";
+    };
+
+    function sendMessage() {
+        const input = document.getElementById('msgInput');
+        ws.send(input.value);
+        input.value = "";
+    }
+</script>
+
+</body>
+</html>
